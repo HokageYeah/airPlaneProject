@@ -1,11 +1,28 @@
-import { _decorator, Component, instantiate, Node, Prefab } from 'cc';
+import { _decorator, Component, instantiate, math, Node, Prefab } from 'cc';
 import { Bullet } from '../bullet/Bullet';
+import { Constant } from './Constant';
+import { EnemyPlane } from '../plane/EnemyPlane';
 const { ccclass, property } = _decorator;
 
 @ccclass('GameManager')
 export class GameManager extends Component {
+
+    // 玩家飞机01
     @property(Node)
     public playerPlane: Node = null
+    // 敌机enemy
+    @property(Prefab)
+    public enemy01: Prefab = null
+    @property(Prefab)
+    public enemy02: Prefab = null
+    @property
+    public createEnemyTime = 1; // 创建敌机时间
+    @property
+    public enemy1Speed = 0.5; // 敌机1速度
+    @property
+    public enemy2Speed = 0.7; // 敌机2速度
+
+    // 子弹
     @property(Prefab)
     public bullet01: Node = null
     @property(Prefab)
@@ -34,6 +51,12 @@ export class GameManager extends Component {
     
     // 是否触摸屏幕
     private _isShootIng = false
+
+    // 创建当前敌机时间
+    private _currrCreateEnemyTime = 0;
+
+    // 组合的间隔状态
+    private _combinationInterval = Constant.Combination.PLAN1;
     start() {
         // 初始化
         this._init()
@@ -45,6 +68,29 @@ export class GameManager extends Component {
         if(this._isShootIng && this._currShootTime > this.shootTime) {
             this._createPlayerBullet()
             this._currShootTime = 0
+        }
+        this._currrCreateEnemyTime += deltaTime;
+        // 判断当前的敌机组合方式
+        switch (this._combinationInterval) {
+            case Constant.Combination.PLAN1:
+                if(this._currrCreateEnemyTime > this.createEnemyTime) {
+                    this.createEnemyPlane();
+                    this._currrCreateEnemyTime = 0;
+                }
+                break;
+            case Constant.Combination.PLAN2:
+                if(this._currrCreateEnemyTime > this.createEnemyTime * 0.9) {
+                    const  randomCombination = math.randomRangeInt(1, 3);
+                    if(randomCombination === Constant.Combination.PLAN2) {
+                        this.createCombination1();
+                    }else{
+                        this.createEnemyPlane();
+                    }
+                    this._currrCreateEnemyTime = 0;
+                }
+                break;
+            default:
+                break;
         }
     }
     // 创建玩家子弹
@@ -65,9 +111,50 @@ export class GameManager extends Component {
         this._isShootIng = value
     }
 
+    // 创建单一的飞机
+    public createEnemyPlane() {
+        const whichEnemy = math.randomRangeInt(1, 3);
+        let prefab: Prefab = null;
+        let speed = 0;
+        if(whichEnemy === Constant.EnemyType.TYPE1){
+            prefab = this.enemy01;
+            speed = this.enemy1Speed;
+        }else{
+            prefab = this.enemy02;
+            speed = this.enemy2Speed;
+        }
+        const enemy = instantiate(prefab);
+        enemy.setParent(this.node);
+        const enemyComp = enemy.getComponent(EnemyPlane);
+        enemyComp.show(speed);
+
+        // 随机生成敌机的区间是-25 25
+        const randomPos = math.randomRangeInt(-20, 21);
+        enemy.setPosition(randomPos, 0, -50);
+    }
+    public createCombination1() {
+        const enmyArray = new Array<Node>(5);
+        Array.from(enmyArray).forEach((item, index) => {
+            enmyArray[index] = instantiate(this.enemy01);
+            const element = enmyArray[index];
+            element.parent = this.node;
+            element.setPosition(-20 + index * 10, 0, -50);
+            const enemyComp = element.getComponent(EnemyPlane)
+            enemyComp.show(this.enemy1Speed);
+        })
+    }
     // 初始化
     private _init() {
         this._currShootTime = this.shootTime;
+        this._changePlaneMode();
+    }
+
+    // 设定一个定时器
+    private _changePlaneMode(){
+        this.schedule(this._modeChanged, 10, 3);
+    }
+    private _modeChanged(){
+        this._combinationInterval ++
     }
 }
 
