@@ -1,4 +1,5 @@
-import { _decorator, Component, math, Node } from 'cc';
+import { _decorator, Collider, Component, ITriggerEvent, math, Node } from 'cc';
+import { Constant } from '../framework/Constant';
 const { ccclass, property } = _decorator;
 
 @ccclass('Bullet')
@@ -9,6 +10,19 @@ export class Bullet extends Component {
     private _isEnemyBullet = false
     start() {
 
+    }
+    // 激活的时候监听
+    onEnable() {
+        // 获取碰撞组件
+        const collider = this.getComponent(Collider);
+        // 监听碰撞事件
+        collider.on('onTriggerEnter', this._onTriggerEnter, this);
+    }
+    // 失活的时候取消监听
+    onDisable() {
+        const collider = this.getComponent(Collider);
+        // 取消监听
+        collider.off('onTriggerEnter', this._onTriggerEnter, this);
     }
 
     update(deltaTime: number) {
@@ -32,6 +46,11 @@ export class Bullet extends Component {
     show(speed: number, isEnemyBullet: boolean) {
         this._bulletSpeed = speed;
         this._isEnemyBullet = isEnemyBullet;
+    }
+    private _onTriggerEnter(event: ITriggerEvent) {
+        console.log('子弹碰撞事件')
+        // 子弹直接销毁
+        this.node.destroy();
     }
 }
 

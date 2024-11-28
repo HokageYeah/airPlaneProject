@@ -1,4 +1,4 @@
-import { _decorator, Component, Node } from 'cc';
+import { _decorator, Collider, Component, ITriggerEvent, Node } from 'cc';
 import { Constant } from '../framework/Constant';
 import { GameManager } from '../framework/GameManager';
 const { ccclass, property } = _decorator;
@@ -30,6 +30,20 @@ export class EnemyPlane extends Component {
 
     }
 
+    // 激活的时候监听
+    onEnable() {
+        // 获取碰撞组件
+        const collider = this.getComponent(Collider);
+        // 监听碰撞事件
+        collider.on('onTriggerEnter', this._onTriggerEnter, this);
+    }
+    // 失活的时候取消监听
+    onDisable() {
+        const collider = this.getComponent(Collider);
+        // 取消监听
+        collider.off('onTriggerEnter', this._onTriggerEnter, this);
+    }
+
     update(deltaTime: number) {
         const pos = this.node.position;
         const movePos = pos.z + this._enemySpeed
@@ -51,9 +65,22 @@ export class EnemyPlane extends Component {
     }
 
     show( gameManager: GameManager, speed: number, needBullet: boolean) {
+        console.log('敌方飞机显示---', gameManager);
         this._gameManager = gameManager
         this._enemySpeed = speed;
         this._needBullet = needBullet
+    }
+    private _onTriggerEnter(event: ITriggerEvent) {
+        console.log('敌方碰撞事件')
+        // 获取碰撞到的分组
+        const collisionGroup = event.otherCollider.getGroup(); 
+        // 如果敌方的飞机碰撞玩家飞机、或者玩家子弹的话，执行如下逻辑
+        if(collisionGroup === Constant.CollisionType.SELF_PLANE || collisionGroup === Constant.CollisionType.SELF_BULLET) {
+            console.log('敌方要销毁---', this._gameManager);
+            // 加分
+            this._gameManager.addScore();
+            this.node.destroy();
+        }
     }
 }
 

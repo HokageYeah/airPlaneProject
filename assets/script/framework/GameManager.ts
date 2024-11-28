@@ -1,4 +1,4 @@
-import { _decorator, Component, instantiate, math, Node, Prefab, Vec3 } from 'cc';
+import { _decorator, BoxCollider, Component, instantiate, math, Node, Prefab, Vec3 } from 'cc';
 import { Bullet } from '../bullet/Bullet';
 import { Constant } from './Constant';
 import { EnemyPlane } from '../plane/EnemyPlane';
@@ -104,28 +104,39 @@ export class GameManager extends Component {
                 break;
         }
     }
+
+    // 获取分数
+    public addScore() {
+        console.log('加分')
+    }
+
     // 创建玩家子弹
     public createPlayerBullet() {
-        // 创建玩家子弹， 预制资源调用instantiate接口获取node节点
-        const bullet = instantiate(this.bullet01)
-        // 将所有的子弹添加子弹管理节点中
-        bullet.setParent(this.bulletRoot)
-        // 设置子弹的位置
-        const pos = this.playerPlane.position;
-        bullet.setPosition(pos.x, pos.y, pos.z - 7);
-        // 设置子弹的移动速度
-        const bulletCom = bullet.getComponent(Bullet)
-        bulletCom.show(this.bulletSpeed, false)
+        // // 创建玩家子弹， 预制资源调用instantiate接口获取node节点
+        // const bullet = instantiate(this.bullet01)
+        // // 将所有的子弹添加子弹管理节点中
+        // bullet.setParent(this.bulletRoot)
+        // // 设置子弹的位置
+        // const pos = this.playerPlane.position;
+        // bullet.setPosition(pos.x, pos.y, pos.z - 7);
+        // // 设置子弹的移动速度
+        // const bulletCom = bullet.getComponent(Bullet)
+        // bulletCom.show(this.bulletSpeed, false)
     }
     public createEnemuyBullet(targetPos: Vec3) {
-        // 实例子弹
-        const bullet = instantiate(this.bullet01);
-        bullet.setParent(this.bulletRoot);
-        // 设置子弹的位置
-        bullet.setPosition(targetPos.x, targetPos.y, targetPos.z + 5);
-        // 设置子弹的移动速度
-        const bulletCom = bullet.getComponent(Bullet)
-        bulletCom.show(1, true)
+        // // 创建敌人子弹
+        // const bullet = instantiate(this.bullet01);
+        // bullet.setParent(this.bulletRoot);
+        // // 设置子弹的位置
+        // bullet.setPosition(targetPos.x, targetPos.y, targetPos.z + 5);
+        // // 设置子弹的移动速度
+        // const bulletCom = bullet.getComponent(Bullet)
+        // bulletCom.show(1, true)
+
+        // // 给敌机子弹添加眼码
+        // const colliderComp = bullet.getComponent(BoxCollider);
+        // colliderComp.setGroup(Constant.CollisionType.ENEMY_BULLET);
+        // colliderComp.setMask(Constant.CollisionType.SELF_PLANE);
     }
     // 判断当前是否处于触摸状态
     public isShootIngs(value: boolean) {
