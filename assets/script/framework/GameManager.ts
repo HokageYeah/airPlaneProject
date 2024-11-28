@@ -1,4 +1,4 @@
-import { _decorator, Component, instantiate, math, Node, Prefab } from 'cc';
+import { _decorator, Component, instantiate, math, Node, Prefab, Vec3 } from 'cc';
 import { Bullet } from '../bullet/Bullet';
 import { Constant } from './Constant';
 import { EnemyPlane } from '../plane/EnemyPlane';
@@ -66,7 +66,7 @@ export class GameManager extends Component {
         this._currShootTime += deltaTime
         // 如果是触摸屏幕， 且射击时间大于周期，则可以再次发射子弹
         if(this._isShootIng && this._currShootTime > this.shootTime) {
-            this._createPlayerBullet()
+            this.createPlayerBullet()
             this._currShootTime = 0
         }
         this._currrCreateEnemyTime += deltaTime;
@@ -90,11 +90,22 @@ export class GameManager extends Component {
                 }
                 break;
             default:
+                if(this._currrCreateEnemyTime > this.createEnemyTime * 0.8) {
+                    const  randomCombination = math.randomRangeInt(1, 4);
+                    if(randomCombination === Constant.Combination.PLAN2) {
+                        this.createCombination1();
+                    } else if(randomCombination === Constant.Combination.PLAN3) {
+                        this.createCombination2();
+                    } else{
+                        this.createEnemyPlane();
+                    }
+                    this._currrCreateEnemyTime = 0;
+                }
                 break;
         }
     }
     // 创建玩家子弹
-    private _createPlayerBullet() {
+    public createPlayerBullet() {
         // 创建玩家子弹， 预制资源调用instantiate接口获取node节点
         const bullet = instantiate(this.bullet01)
         // 将所有的子弹添加子弹管理节点中
@@ -104,7 +115,17 @@ export class GameManager extends Component {
         bullet.setPosition(pos.x, pos.y, pos.z - 7);
         // 设置子弹的移动速度
         const bulletCom = bullet.getComponent(Bullet)
-        bulletCom.bulletSpeed = this.bulletSpeed
+        bulletCom.show(this.bulletSpeed, false)
+    }
+    public createEnemuyBullet(targetPos: Vec3) {
+        // 实例子弹
+        const bullet = instantiate(this.bullet01);
+        bullet.setParent(this.bulletRoot);
+        // 设置子弹的位置
+        bullet.setPosition(targetPos.x, targetPos.y, targetPos.z + 5);
+        // 设置子弹的移动速度
+        const bulletCom = bullet.getComponent(Bullet)
+        bulletCom.show(1, true)
     }
     // 判断当前是否处于触摸状态
     public isShootIngs(value: boolean) {
@@ -126,7 +147,7 @@ export class GameManager extends Component {
         const enemy = instantiate(prefab);
         enemy.setParent(this.node);
         const enemyComp = enemy.getComponent(EnemyPlane);
-        enemyComp.show(speed);
+        enemyComp.show(this, speed, true);
 
         // 随机生成敌机的区间是-25 25
         const randomPos = math.randomRangeInt(-20, 21);
@@ -140,7 +161,29 @@ export class GameManager extends Component {
             element.parent = this.node;
             element.setPosition(-20 + index * 10, 0, -50);
             const enemyComp = element.getComponent(EnemyPlane)
-            enemyComp.show(this.enemy1Speed);
+            enemyComp.show(this, this.enemy1Speed, false);
+        })
+    }
+    public createCombination2() {
+        const enmyArray = new Array<Node>(7);
+        // 定义位置数组
+        const combinationPos = [
+            [-20, 0, -60,],
+            [-14, 0, -55,],
+            [-7,0, -50,],
+            [0,0,-45,],
+            [7,0,-50,],
+            [14,0,-55,],
+            [21,0,-60]
+        ];
+        // 创建v字型的飞机
+        Array.from(enmyArray).forEach((item, index) => {
+            enmyArray[index] = instantiate(this.enemy02);
+            const element = enmyArray[index];
+            element.parent = this.node;
+            element.setPosition(combinationPos[index][0], combinationPos[index][1], combinationPos[index][2]);
+            const enemyComp = element.getComponent(EnemyPlane)
+            enemyComp.show(this, this.enemy2Speed, false);
         })
     }
     // 初始化
