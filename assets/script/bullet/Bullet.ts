@@ -40,7 +40,7 @@ export class Bullet extends Component {
         // 超过边界,销毁子弹
         if(moveLength > outofRange) {
             this.node.destroy();
-            console.log('销毁子弹');
+            // console.log('销毁子弹');
         }
     }
     show(speed: number, isEnemyBullet: boolean) {
@@ -48,7 +48,7 @@ export class Bullet extends Component {
         this._isEnemyBullet = isEnemyBullet;
     }
     private _onTriggerEnter(event: ITriggerEvent) {
-        console.log('子弹碰撞事件')
+        // console.log('子弹碰撞事件')
         // 子弹直接销毁
         this.node.destroy();
     }

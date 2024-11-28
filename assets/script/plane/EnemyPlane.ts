@@ -65,7 +65,7 @@ export class EnemyPlane extends Component {
     }
 
     show( gameManager: GameManager, speed: number, needBullet: boolean) {
-        console.log('敌方飞机显示---', gameManager);
+        // console.log('敌方飞机显示---', gameManager);
         this._gameManager = gameManager
         this._enemySpeed = speed;
         this._needBullet = needBullet

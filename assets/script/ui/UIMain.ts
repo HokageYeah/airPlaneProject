@@ -24,20 +24,20 @@ export class UIMain extends Component {
     }
     _touchMove( event: EventTouch) {
         const delta =  event.touch.getDelta();
-        console.log('_touchMove----', event)
-        console.log('_touchMove----delta---', delta)
+        // console.log('_touchMove----', event)
+        // console.log('_touchMove----delta---', delta)
         let pos = this.playerPlane.position;
         this.playerPlane.setPosition(pos.x + 0.01 * this.planeSpeed * delta.x, pos.y, pos.z - 0.01 * this.planeSpeed * delta.y)
     }
 
     _touchStart( event: EventTouch) {
-        console.log('_touchStart----', event)
-        console.log('_touchStart----gameManager---', this.gameManager)
+        // console.log('_touchStart----', event)
+        // console.log('_touchStart----gameManager---', this.gameManager)
         this.gameManager.isShootIngs(true)
     }
 
     _touchEnd( event: EventTouch) {
-        console.log('_touchEnd----', event)
+        // console.log('_touchEnd----', event)
         this.gameManager.isShootIngs(false)
     }
 }

@@ -70,6 +70,11 @@ export class GameManager extends Component {
             this._currShootTime = 0
         }
         this._currrCreateEnemyTime += deltaTime;
+        // if(this._currrCreateEnemyTime > this.createEnemyTime * 1.0) {
+        //     this.createCombination2();
+        //     this._currrCreateEnemyTime = 0;
+        // }
+        // return
         // 判断当前的敌机组合方式
         switch (this._combinationInterval) {
             case Constant.Combination.PLAN1:
@@ -112,31 +117,31 @@ export class GameManager extends Component {
 
     // 创建玩家子弹
     public createPlayerBullet() {
-        // // 创建玩家子弹， 预制资源调用instantiate接口获取node节点
-        // const bullet = instantiate(this.bullet01)
-        // // 将所有的子弹添加子弹管理节点中
-        // bullet.setParent(this.bulletRoot)
-        // // 设置子弹的位置
-        // const pos = this.playerPlane.position;
-        // bullet.setPosition(pos.x, pos.y, pos.z - 7);
-        // // 设置子弹的移动速度
-        // const bulletCom = bullet.getComponent(Bullet)
-        // bulletCom.show(this.bulletSpeed, false)
+        // 创建玩家子弹， 预制资源调用instantiate接口获取node节点
+        const bullet = instantiate(this.bullet01)
+        // 将所有的子弹添加子弹管理节点中
+        bullet.setParent(this.bulletRoot)
+        // 设置子弹的位置
+        const pos = this.playerPlane.position;
+        bullet.setPosition(pos.x, pos.y, pos.z - 7);
+        // 设置子弹的移动速度
+        const bulletCom = bullet.getComponent(Bullet)
+        bulletCom.show(this.bulletSpeed, false)
     }
     public createEnemuyBullet(targetPos: Vec3) {
-        // // 创建敌人子弹
-        // const bullet = instantiate(this.bullet01);
-        // bullet.setParent(this.bulletRoot);
-        // // 设置子弹的位置
-        // bullet.setPosition(targetPos.x, targetPos.y, targetPos.z + 5);
-        // // 设置子弹的移动速度
-        // const bulletCom = bullet.getComponent(Bullet)
-        // bulletCom.show(1, true)
+        // 创建敌人子弹
+        const bullet = instantiate(this.bullet01);
+        bullet.setParent(this.bulletRoot);
+        // 设置子弹的位置
+        bullet.setPosition(targetPos.x, targetPos.y, targetPos.z + 5);
+        // 设置子弹的移动速度
+        const bulletCom = bullet.getComponent(Bullet)
+        bulletCom.show(1, true)
 
-        // // 给敌机子弹添加眼码
-        // const colliderComp = bullet.getComponent(BoxCollider);
-        // colliderComp.setGroup(Constant.CollisionType.ENEMY_BULLET);
-        // colliderComp.setMask(Constant.CollisionType.SELF_PLANE);
+        // 给敌机子弹添加眼码
+        const colliderComp = bullet.getComponent(BoxCollider);
+        colliderComp.setGroup(Constant.CollisionType.ENEMY_BULLET);
+        colliderComp.setMask(Constant.CollisionType.SELF_PLANE);
     }
     // 判断当前是否处于触摸状态
     public isShootIngs(value: boolean) {
