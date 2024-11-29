@@ -11,7 +11,7 @@
   },
   {
     "__type__": "cc.Scene",
-    "_name": "scene",
+    "_name": "testScene",
     "_objFlags": 0,
     "__editorExtras__": {},
     "_parent": null,

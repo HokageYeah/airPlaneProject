@@ -34,8 +34,10 @@ export class EnemyPlane extends Component {
     onEnable() {
         // 获取碰撞组件
         const collider = this.getComponent(Collider);
-        // 监听碰撞事件
+        // 监听触发事件
         collider.on('onTriggerEnter', this._onTriggerEnter, this);
+        // 监听碰撞事件
+        collider.on('onCollisionEnter', this._onCollisionEnter, this);
     }
     // 失活的时候取消监听
     onDisable() {
@@ -71,16 +73,19 @@ export class EnemyPlane extends Component {
         this._needBullet = needBullet
     }
     private _onTriggerEnter(event: ITriggerEvent) {
-        console.log('敌方碰撞事件')
+        console.log('敌方触发事件')
         // 获取碰撞到的分组
         const collisionGroup = event.otherCollider.getGroup(); 
         // 如果敌方的飞机碰撞玩家飞机、或者玩家子弹的话，执行如下逻辑
         if(collisionGroup === Constant.CollisionType.SELF_PLANE || collisionGroup === Constant.CollisionType.SELF_BULLET) {
-            console.log('敌方要销毁---', this._gameManager);
+            // console.log('敌方要销毁---', this._gameManager);
             // 加分
             this._gameManager.addScore();
             this.node.destroy();
         }
+    }
+    private _onCollisionEnter(event: ITriggerEvent) {
+        console.log('敌方子弹碰撞事件')
     }
 }
 

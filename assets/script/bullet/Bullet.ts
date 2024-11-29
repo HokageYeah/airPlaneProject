@@ -8,6 +8,8 @@ export class Bullet extends Component {
     private _bulletSpeed = 0
     // 是不是敌机子弹
     private _isEnemyBullet = false
+    // 子弹的方向属性, 默认直线发射
+    private _direction = Constant.Direction.MIDDLE; 
     start() {
 
     }
@@ -30,11 +32,24 @@ export class Bullet extends Component {
         let moveLength = 0;
         let outofRange = 50;
         if(this._isEnemyBullet) {
+            // 敌方子弹
            moveLength = pos.z + this._bulletSpeed 
+           this.node.setPosition(pos.x, pos.y, moveLength)
         }else{
+            // 我方子弹
             moveLength = pos.z - this._bulletSpeed
+            switch (this._direction) {
+                case Constant.Direction.LEFT:
+                    this.node.setPosition(pos.x - this._bulletSpeed * 0.2, pos.y, moveLength)
+                    break;
+                case Constant.Direction.RIGHT:
+                    this.node.setPosition(pos.x + this._bulletSpeed * 0.2, pos.y, moveLength)
+                    break;
+                default:
+                    this.node.setPosition(pos.x, pos.y, moveLength)
+                    break;
+            }
         }
-        this.node.setPosition(pos.x, pos.y, moveLength)
         // 取绝对值
         moveLength = Math.abs(moveLength);
         // 超过边界,销毁子弹
@@ -43,12 +58,13 @@ export class Bullet extends Component {
             // console.log('销毁子弹');
         }
     }
-    show(speed: number, isEnemyBullet: boolean) {
+    show(speed: number, isEnemyBullet: boolean, direction=Constant.Direction.MIDDLE) {
         this._bulletSpeed = speed;
         this._isEnemyBullet = isEnemyBullet;
+        this._direction = direction
     }
     private _onTriggerEnter(event: ITriggerEvent) {
-        // console.log('子弹碰撞事件')
+        console.log('子弹碰撞事件')
         // 子弹直接销毁
         this.node.destroy();
     }

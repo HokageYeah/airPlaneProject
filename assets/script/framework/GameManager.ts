@@ -1,7 +1,8 @@
-import { _decorator, BoxCollider, Component, instantiate, math, Node, Prefab, Vec3 } from 'cc';
+import { _decorator, BoxCollider, Component, instantiate, macro, math, Node, Prefab, Vec3 } from 'cc';
 import { Bullet } from '../bullet/Bullet';
 import { Constant } from './Constant';
 import { EnemyPlane } from '../plane/EnemyPlane';
+import { BulletProp } from '../bullet/BulletProp';
 const { ccclass, property } = _decorator;
 
 @ccclass('GameManager')
@@ -46,6 +47,19 @@ export class GameManager extends Component {
     @property    
     public shootTime = 0.3
 
+
+    // 道具属性
+    @property(Prefab)
+    public bulletPropM: Prefab = null
+    @property(Prefab)
+    public bulletPropS: Prefab = null
+    @property(Prefab)
+    public bulletPropH: Prefab = null
+    // 道具速度
+    @property
+    public bulletPropSpeed = 0.3;
+    
+
     // 子弹射击时间
     private _currShootTime = 0
     
@@ -57,6 +71,9 @@ export class GameManager extends Component {
 
     // 组合的间隔状态
     private _combinationInterval = Constant.Combination.PLAN1;
+
+    // 子弹类型
+    private _bulletType = Constant.BulletPropType.BULLET_M;
     start() {
         // 初始化
         this._init()
@@ -66,7 +83,19 @@ export class GameManager extends Component {
         this._currShootTime += deltaTime
         // 如果是触摸屏幕， 且射击时间大于周期，则可以再次发射子弹
         if(this._isShootIng && this._currShootTime > this.shootTime) {
-            this.createPlayerBullet()
+            let createStr = 'createPlayerBulletM'
+            switch (this._bulletType) {
+                case Constant.BulletPropType.BULLET_H:
+                    createStr = 'createPlayerBulletH'
+                    break;
+                case Constant.BulletPropType.BULLET_S:
+                    createStr = 'createPlayerBulletS'
+                    break;
+                default:
+                    createStr = 'createPlayerBulletM'
+                    break;
+            }
+            this[createStr]()
             this._currShootTime = 0
         }
         this._currrCreateEnemyTime += deltaTime;
@@ -116,7 +145,7 @@ export class GameManager extends Component {
     }
 
     // 创建玩家子弹
-    public createPlayerBullet() {
+    public createPlayerBulletM() {
         // 创建玩家子弹， 预制资源调用instantiate接口获取node节点
         const bullet = instantiate(this.bullet01)
         // 将所有的子弹添加子弹管理节点中
@@ -127,6 +156,39 @@ export class GameManager extends Component {
         // 设置子弹的移动速度
         const bulletCom = bullet.getComponent(Bullet)
         bulletCom.show(this.bulletSpeed, false)
+    }
+    public createPlayerBulletH() {
+        // 获取子弹的位置
+        const pos = this.playerPlane.position;
+        // 左右 两边
+        const ary = [-2.5, 2.5];
+        ary.forEach((item, index) => {
+            // 创建玩家子弹， 预制资源调用instantiate接口获取node节点
+            const bullet1 = instantiate(this.bullet03)
+            // 将所有的子弹添加子弹管理节点中
+            bullet1.setParent(this.bulletRoot)
+            bullet1.setPosition(pos.x + item, pos.y, pos.z - 7);
+            // 设置子弹的移动速度
+            const bulletCom1 = bullet1.getComponent(Bullet)
+            bulletCom1.show(this.bulletSpeed, false)
+        })
+    }
+    public createPlayerBulletS() {
+        // 设置子弹的位置
+        const pos = this.playerPlane.position;
+        // 三发子弹 
+        const ary  = [-4, 0, 4];
+        ary.forEach((item, index) => {
+            const type = item == 0 ? Constant.Direction.MIDDLE : item == -4 ? Constant.Direction.LEFT : Constant.Direction.RIGHT
+            // 创建玩家子弹， 预制资源调用instantiate接口获取node节点
+            const bullet = instantiate(this.bullet05)
+            // 将所有的子弹添加子弹管理节点中
+            bullet.setParent(this.bulletRoot)
+            bullet.setPosition(pos.x + item, pos.y, pos.z - 7);
+            // 设置子弹的移动速度
+            const bulletCom = bullet.getComponent(Bullet)
+            bulletCom.show(this.bulletSpeed, false, type)  
+        })
     }
     public createEnemuyBullet(targetPos: Vec3) {
         // 创建敌人子弹
@@ -142,6 +204,29 @@ export class GameManager extends Component {
         const colliderComp = bullet.getComponent(BoxCollider);
         colliderComp.setGroup(Constant.CollisionType.ENEMY_BULLET);
         colliderComp.setMask(Constant.CollisionType.SELF_PLANE);
+    }
+    public createBulletProp() {
+        // 创建子弹道具
+        const randomProp = math.randomRangeInt(1, 4);
+        let prefab: Prefab = null;
+        switch (randomProp) {
+            case Constant.BulletPropType.BULLET_H:
+                prefab = this.bulletPropH;
+                break;
+            case Constant.BulletPropType.BULLET_S:
+                prefab = this.bulletPropS;
+                break;
+            default:
+                prefab = this.bulletPropM;
+                break;
+        }
+        // 实例化道具
+        const prop = instantiate(prefab);
+        prop.setParent(this.node);
+        prop.setPosition(15, 0, -50);
+        // 展示道具
+        const propComp = prop.getComponent(BulletProp)
+        propComp.show(this, -this.bulletPropSpeed)
     }
     // 判断当前是否处于触摸状态
     public isShootIngs(value: boolean) {
@@ -206,14 +291,25 @@ export class GameManager extends Component {
     private _init() {
         this._currShootTime = this.shootTime;
         this._changePlaneMode();
+
+        // 测试代码 初始化的时候就创建子弹道具
+        this.createBulletProp();
+    }
+
+    // 更改当前子弹的leix
+    public changeBulletType(type: number) {
+        this._bulletType = type
     }
 
     // 设定一个定时器
     private _changePlaneMode(){
-        this.schedule(this._modeChanged, 10, 3);
+        // 如果要定时器一直执行下去，则需要 macro.REPEAT_FOREVER]
+        this.schedule(this._modeChanged, 10, macro.REPEAT_FOREVER);
     }
     private _modeChanged(){
         this._combinationInterval ++
+        // 创建子弹道具
+        this.createBulletProp();
     }
 }
 

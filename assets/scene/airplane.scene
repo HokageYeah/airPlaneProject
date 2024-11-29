@@ -613,9 +613,9 @@
     ],
     "value": {
       "__type__": "cc.Vec3",
-      "x": -11.219,
+      "x": -11.633,
       "y": 0,
-      "z": 0
+      "z": -0.537
     }
   },
   {
@@ -800,7 +800,7 @@
     "_priority": 1073741824,
     "_fov": 45,
     "_fovAxis": 0,
-    "_orthoHeight": 515.797280593325,
+    "_orthoHeight": 364.4019138755981,
     "_near": 1,
     "_far": 2000,
     "_color": {
@@ -968,6 +968,19 @@
     },
     "bulletSpeed": 1,
     "shootTime": 0.1,
+    "bulletPropM": {
+      "__uuid__": "5712a8aa-fcdc-436b-8517-015fd0fbf704",
+      "__expectedType__": "cc.Prefab"
+    },
+    "bulletPropS": {
+      "__uuid__": "2c057a57-0b4e-40d6-be9d-3f82f7dd0356",
+      "__expectedType__": "cc.Prefab"
+    },
+    "bulletPropH": {
+      "__uuid__": "eb3f1052-b3cb-4c62-86aa-6fcc63b17c09",
+      "__expectedType__": "cc.Prefab"
+    },
+    "bulletPropSpeed": 0.3,
     "_id": "78ZHwJIURC9ZbrJ/y8tel2"
   },
   {
