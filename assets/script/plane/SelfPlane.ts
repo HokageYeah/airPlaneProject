@@ -4,6 +4,16 @@ const { ccclass, property } = _decorator;
 
 @ccclass('SelfPlane')
 export class SelfPlane extends Component {
+
+    // 玩家飞机的血量上线
+    public lifeValue = 5;
+
+    // 当前血量
+    private _currLife = 0;
+
+    // 当前是否已经噶了
+    public isDie = false;
+
     start() {
     }
     // 激活的时候监听
@@ -29,7 +39,17 @@ export class SelfPlane extends Component {
         // 如果玩家的飞机碰撞敌方飞机、或者敌方子弹的话，执行如下逻辑
         if(collisionGroup === Constant.CollisionType.ENEMY_PLANE || collisionGroup === Constant.CollisionType.ENEMY_BULLET) {
             console.log('reduce blood')
+            this._currLife --;
+            if(this._currLife <= 0) {
+                this.isDie = true;
+                console.log('self plane is die')
+            }
         }
+    }
+
+    public init() {
+        this._currLife = this.lifeValue;
+        this.isDie = false;
     }
 
 }

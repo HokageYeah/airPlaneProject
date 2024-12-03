@@ -1,16 +1,17 @@
-import { _decorator, BoxCollider, Component, instantiate, macro, math, Node, Prefab, Vec3 } from 'cc';
+import { _decorator, BoxCollider, Component, instantiate, Label, macro, math, Node, Prefab, Vec3, Animation } from 'cc';
 import { Bullet } from '../bullet/Bullet';
 import { Constant } from './Constant';
 import { EnemyPlane } from '../plane/EnemyPlane';
 import { BulletProp } from '../bullet/BulletProp';
+import { SelfPlane } from '../plane/SelfPlane';
 const { ccclass, property } = _decorator;
 
 @ccclass('GameManager')
 export class GameManager extends Component {
 
     // 玩家飞机01
-    @property(Node)
-    public playerPlane: Node = null
+    @property(SelfPlane)
+    public playerPlane: SelfPlane = null
     // 敌机enemy
     @property(Prefab)
     public enemy01: Prefab = null
@@ -58,6 +59,26 @@ export class GameManager extends Component {
     // 道具速度
     @property
     public bulletPropSpeed = 0.3;
+
+    // 游戏结束界面
+    @property(Node)
+    public gameOverPage: Node = null;
+
+    // 游戏界面
+    @property(Node)
+    public gamePage: Node = null;
+
+    // 份数
+    @property(Label)
+    public gameScore: Label = null;
+
+    // 游戏结束结算份数
+    @property(Label)
+    public gameOverScore: Label = null;
+
+    // 代码控制动画播放
+    @property(Animation)
+    public overAnim: Animation = null;
     
 
     // 子弹射击时间
@@ -74,12 +95,30 @@ export class GameManager extends Component {
 
     // 子弹类型
     private _bulletType = Constant.BulletPropType.BULLET_M;
+
+    // 分数
+    private _score = 0;
+
+    // 游戏是否开始
+    public isGameStart = false;
     start() {
         // 初始化
         this._init()
     }
 
     update(deltaTime: number) {
+
+        // 前置条件：游戏是否开始了
+        if(!this.isGameStart) {
+            return;
+        }
+
+        // 判断当前玩家飞机是否死亡
+        if(this.playerPlane.isDie) {
+            this.gameOver();
+            return;
+        }
+
         this._currShootTime += deltaTime
         // 如果是触摸屏幕， 且射击时间大于周期，则可以再次发射子弹
         if(this._isShootIng && this._currShootTime > this.shootTime) {
@@ -138,10 +177,66 @@ export class GameManager extends Component {
                 break;
         }
     }
+    private reData() {
+        // 子弹射击时间
+        this._currShootTime = 0
+
+        // 是否触摸屏幕
+        this._isShootIng = false
+
+        // 创建当前敌机时间
+        this._currrCreateEnemyTime = 0;
+
+        // 组合的间隔状态
+        this._combinationInterval = Constant.Combination.PLAN1;
+
+        // 子弹类型
+        this._bulletType = Constant.BulletPropType.BULLET_M;
+
+        // 重置份数
+        this._score = 0;
+
+        // 初始化玩家位置
+        this.playerPlane.node.setPosition(0, 0, 15)
+    }
+    public returnMain() {
+        // 重置数据
+        this.reData();
+    }
+    public gameStart() {
+        console.log('gameStart--------');
+        this.isGameStart = true
+        // 再次开启定时器
+        this._changePlaneMode();
+        this._score = 0;
+        this.gameScore.string = this._score.toString();
+    }
+    public gameRestart() {
+        this.isGameStart = true;
+        this.reData();
+    }
+
+    public gameOver() {
+        this.isGameStart = false;
+        this.gamePage.active = false;
+        this.gameOverPage.active = true;
+        this.gameOverScore.string = this._score.toString();
+        // 激活节点， 播放动画
+        this.overAnim.play();
+        // 取消射击状态
+        this.isShootIngs(false);
+        // 取消定时器的状态
+        this.unschedule(this._modeChanged);
+        this.playerPlane.init();
+        // 销毁场景里面的所有对象
+        this._destoryAll();
+    }
 
     // 获取分数
     public addScore() {
         console.log('加分')
+        this._score ++;
+        this.gameScore.string = this._score.toString();
     }
 
     // 创建玩家子弹
@@ -151,7 +246,7 @@ export class GameManager extends Component {
         // 将所有的子弹添加子弹管理节点中
         bullet.setParent(this.bulletRoot)
         // 设置子弹的位置
-        const pos = this.playerPlane.position;
+        const pos = this.playerPlane.node.position;
         bullet.setPosition(pos.x, pos.y, pos.z - 7);
         // 设置子弹的移动速度
         const bulletCom = bullet.getComponent(Bullet)
@@ -159,7 +254,7 @@ export class GameManager extends Component {
     }
     public createPlayerBulletH() {
         // 获取子弹的位置
-        const pos = this.playerPlane.position;
+        const pos = this.playerPlane.node.position;
         // 左右 两边
         const ary = [-2.5, 2.5];
         ary.forEach((item, index) => {
@@ -175,7 +270,7 @@ export class GameManager extends Component {
     }
     public createPlayerBulletS() {
         // 设置子弹的位置
-        const pos = this.playerPlane.position;
+        const pos = this.playerPlane.node.position;
         // 三发子弹 
         const ary  = [-4, 0, 4];
         ary.forEach((item, index) => {
@@ -290,10 +385,14 @@ export class GameManager extends Component {
     // 初始化
     private _init() {
         this._currShootTime = this.shootTime;
-        this._changePlaneMode();
+        // 初始化飞机
+        this.playerPlane.init();
+
+        // 定时器不在此处开始, 在游戏开始的方法中开启定时器
+        // this._changePlaneMode();
 
         // 测试代码 初始化的时候就创建子弹道具
-        this.createBulletProp();
+        // this.createBulletProp();
     }
 
     // 更改当前子弹的leix
@@ -310,6 +409,25 @@ export class GameManager extends Component {
         this._combinationInterval ++
         // 创建子弹道具
         this.createBulletProp();
+    }
+    private _destoryAll() {
+        // 销毁场景里面的所有gamemanager子节点对象
+        let children = this.node.children;
+        let length = children.length;
+        // 销毁对象必须从最后一个开始销毁， 如果从前往后的话
+        // 第一个被销毁了，那么后一个就会补上第一个的位置，就会产生问题
+        for (let i = length - 1; i >= 0; i-- ) {
+            const element = children[i]
+            element.destroy();
+        }
+
+        // 销毁所有的子弹节点
+        children = this.bulletRoot.children;
+        length = children.length;
+        for(let i = length -1; i >= 0; i--) {
+            const element = children[i]
+            element.destroy();
+        }
     }
 }
 
