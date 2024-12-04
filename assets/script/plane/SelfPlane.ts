@@ -1,4 +1,4 @@
-import { _decorator, Collider, Component, EventTouch, Input, input, ITriggerEvent, Node, systemEvent, SystemEvent } from 'cc';
+import { _decorator, AudioSource, Collider, Component, EventTouch, Input, input, ITriggerEvent, Node, systemEvent, SystemEvent } from 'cc';
 import { Constant } from '../framework/Constant';
 const { ccclass, property } = _decorator;
 
@@ -14,7 +14,11 @@ export class SelfPlane extends Component {
     // 当前是否已经噶了
     public isDie = false;
 
+    // 音频
+    private _audioSource : AudioSource = null;
+
     start() {
+        this._audioSource = this.getComponent(AudioSource);
     }
     // 激活的时候监听
     onEnable() {
@@ -42,6 +46,7 @@ export class SelfPlane extends Component {
             this._currLife --;
             if(this._currLife <= 0) {
                 this.isDie = true;
+                this._audioSource.play();
                 console.log('self plane is die')
             }
         }

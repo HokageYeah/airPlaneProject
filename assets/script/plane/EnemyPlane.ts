@@ -79,6 +79,7 @@ export class EnemyPlane extends Component {
         // 如果敌方的飞机碰撞玩家飞机、或者玩家子弹的话，执行如下逻辑
         if(collisionGroup === Constant.CollisionType.SELF_PLANE || collisionGroup === Constant.CollisionType.SELF_BULLET) {
             // console.log('敌方要销毁---', this._gameManager);
+            this._gameManager.playAudioEffect('enemy');
             // 加分
             this._gameManager.addScore();
             this.node.destroy();

@@ -4,6 +4,7 @@ import { Constant } from './Constant';
 import { EnemyPlane } from '../plane/EnemyPlane';
 import { BulletProp } from '../bullet/BulletProp';
 import { SelfPlane } from '../plane/SelfPlane';
+import { AudioManager } from './AudioManager';
 const { ccclass, property } = _decorator;
 
 @ccclass('GameManager')
@@ -24,6 +25,7 @@ export class GameManager extends Component {
     @property
     public enemy2Speed = 0.7; // 敌机2速度
 
+    // UI部分
     // 子弹
     @property(Prefab)
     public bullet01: Node = null
@@ -35,6 +37,10 @@ export class GameManager extends Component {
     public bullet04: Node = null
     @property(Prefab)
     public bullet05: Node = null
+
+    // audio部分
+    @property(AudioManager)
+    public audioEffect :AudioManager = null;
 
     // 子弹的管理节点
     @property(Node)
@@ -134,6 +140,8 @@ export class GameManager extends Component {
                     createStr = 'createPlayerBulletM'
                     break;
             }
+            const name = 'bullet' + (this._bulletType % 2 + 1)
+            this.playAudioEffect(name)
             this[createStr]()
             this._currShootTime = 0
         }
@@ -213,6 +221,8 @@ export class GameManager extends Component {
     }
     public gameRestart() {
         this.isGameStart = true;
+        // 再次开启定时器
+        this._changePlaneMode();
         this.reData();
     }
 
@@ -398,6 +408,11 @@ export class GameManager extends Component {
     // 更改当前子弹的leix
     public changeBulletType(type: number) {
         this._bulletType = type
+    }
+
+    // 设置音频
+    public playAudioEffect(name: string) {
+        this.audioEffect.play(name);
     }
 
     // 设定一个定时器
