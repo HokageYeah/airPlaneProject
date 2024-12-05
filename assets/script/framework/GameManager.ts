@@ -5,6 +5,7 @@ import { EnemyPlane } from '../plane/EnemyPlane';
 import { BulletProp } from '../bullet/BulletProp';
 import { SelfPlane } from '../plane/SelfPlane';
 import { AudioManager } from './AudioManager';
+import { PoolManager } from './PoolManager';
 const { ccclass, property } = _decorator;
 
 @ccclass('GameManager')
@@ -28,15 +29,15 @@ export class GameManager extends Component {
     // UI部分
     // 子弹
     @property(Prefab)
-    public bullet01: Node = null
+    public bullet01: Prefab = null
     @property(Prefab)
-    public bullet02: Node = null
+    public bullet02: Prefab = null
     @property(Prefab)
-    public bullet03: Node = null
+    public bullet03: Prefab = null
     @property(Prefab)
-    public bullet04: Node = null
+    public bullet04: Prefab = null
     @property(Prefab)
-    public bullet05: Node = null
+    public bullet05: Prefab = null
 
     // audio部分
     @property(AudioManager)
@@ -160,7 +161,7 @@ export class GameManager extends Component {
                 }
                 break;
             case Constant.Combination.PLAN2:
-                if(this._currrCreateEnemyTime > this.createEnemyTime * 0.9) {
+                if(this._currrCreateEnemyTime > this.createEnemyTime * 3) {
                     const  randomCombination = math.randomRangeInt(1, 3);
                     if(randomCombination === Constant.Combination.PLAN2) {
                         this.createCombination1();
@@ -171,7 +172,7 @@ export class GameManager extends Component {
                 }
                 break;
             default:
-                if(this._currrCreateEnemyTime > this.createEnemyTime * 0.8) {
+                if(this._currrCreateEnemyTime > this.createEnemyTime * 2) {
                     const  randomCombination = math.randomRangeInt(1, 4);
                     if(randomCombination === Constant.Combination.PLAN2) {
                         this.createCombination1();
@@ -252,9 +253,10 @@ export class GameManager extends Component {
     // 创建玩家子弹
     public createPlayerBulletM() {
         // 创建玩家子弹， 预制资源调用instantiate接口获取node节点
-        const bullet = instantiate(this.bullet01)
+        const bullet = PoolManager.instance().getNode(this.bullet01, this.bulletRoot);
+        // const bullet = instantiate(this.bullet01)
         // 将所有的子弹添加子弹管理节点中
-        bullet.setParent(this.bulletRoot)
+        // bullet.setParent(this.bulletRoot)
         // 设置子弹的位置
         const pos = this.playerPlane.node.position;
         bullet.setPosition(pos.x, pos.y, pos.z - 7);
@@ -269,9 +271,10 @@ export class GameManager extends Component {
         const ary = [-2.5, 2.5];
         ary.forEach((item, index) => {
             // 创建玩家子弹， 预制资源调用instantiate接口获取node节点
-            const bullet1 = instantiate(this.bullet03)
+            const bullet1 = PoolManager.instance().getNode(this.bullet03, this.bulletRoot);
+            // const bullet1 = instantiate(this.bullet03)
             // 将所有的子弹添加子弹管理节点中
-            bullet1.setParent(this.bulletRoot)
+            // bullet1.setParent(this.bulletRoot)
             bullet1.setPosition(pos.x + item, pos.y, pos.z - 7);
             // 设置子弹的移动速度
             const bulletCom1 = bullet1.getComponent(Bullet)
@@ -286,9 +289,10 @@ export class GameManager extends Component {
         ary.forEach((item, index) => {
             const type = item == 0 ? Constant.Direction.MIDDLE : item == -4 ? Constant.Direction.LEFT : Constant.Direction.RIGHT
             // 创建玩家子弹， 预制资源调用instantiate接口获取node节点
-            const bullet = instantiate(this.bullet05)
+            const bullet = PoolManager.instance().getNode(this.bullet05, this.bulletRoot);
+            // const bullet = instantiate(this.bullet05)
             // 将所有的子弹添加子弹管理节点中
-            bullet.setParent(this.bulletRoot)
+            // bullet.setParent(this.bulletRoot)
             bullet.setPosition(pos.x + item, pos.y, pos.z - 7);
             // 设置子弹的移动速度
             const bulletCom = bullet.getComponent(Bullet)
@@ -297,8 +301,9 @@ export class GameManager extends Component {
     }
     public createEnemuyBullet(targetPos: Vec3) {
         // 创建敌人子弹
-        const bullet = instantiate(this.bullet01);
-        bullet.setParent(this.bulletRoot);
+        const bullet = PoolManager.instance().getNode(this.bullet02, this.bulletRoot);
+        // const bullet = instantiate(this.bullet01);
+        // bullet.setParent(this.bulletRoot);
         // 设置子弹的位置
         bullet.setPosition(targetPos.x, targetPos.y, targetPos.z + 5);
         // 设置子弹的移动速度
@@ -326,8 +331,9 @@ export class GameManager extends Component {
                 break;
         }
         // 实例化道具
-        const prop = instantiate(prefab);
-        prop.setParent(this.node);
+        const prop = PoolManager.instance().getNode(prefab, this.node);
+        // const prop = instantiate(prefab);
+        // prop.setParent(this.node);
         prop.setPosition(15, 0, -50);
         // 展示道具
         const propComp = prop.getComponent(BulletProp)
@@ -350,8 +356,9 @@ export class GameManager extends Component {
             prefab = this.enemy02;
             speed = this.enemy2Speed;
         }
-        const enemy = instantiate(prefab);
-        enemy.setParent(this.node);
+        const enemy = PoolManager.instance().getNode(prefab, this.node);
+        // const enemy = instantiate(prefab);
+        // enemy.setParent(this.node);
         const enemyComp = enemy.getComponent(EnemyPlane);
         enemyComp.show(this, speed, true);
 
@@ -362,9 +369,10 @@ export class GameManager extends Component {
     public createCombination1() {
         const enmyArray = new Array<Node>(5);
         Array.from(enmyArray).forEach((item, index) => {
-            enmyArray[index] = instantiate(this.enemy01);
+            enmyArray[index] = PoolManager.instance().getNode(this.enemy01, this.node);
+            // enmyArray[index] = instantiate(this.enemy01);
             const element = enmyArray[index];
-            element.parent = this.node;
+            // element.parent = this.node;
             element.setPosition(-20 + index * 10, 0, -50);
             const enemyComp = element.getComponent(EnemyPlane)
             enemyComp.show(this, this.enemy1Speed, false);
@@ -384,9 +392,10 @@ export class GameManager extends Component {
         ];
         // 创建v字型的飞机
         Array.from(enmyArray).forEach((item, index) => {
-            enmyArray[index] = instantiate(this.enemy02);
+            enmyArray[index] = PoolManager.instance().getNode(this.enemy02, this.node);
+            // enmyArray[index] = instantiate(this.enemy02);
             const element = enmyArray[index];
-            element.parent = this.node;
+            // element.parent = this.node;
             element.setPosition(combinationPos[index][0], combinationPos[index][1], combinationPos[index][2]);
             const enemyComp = element.getComponent(EnemyPlane)
             enemyComp.show(this, this.enemy2Speed, false);
@@ -433,7 +442,9 @@ export class GameManager extends Component {
         // 第一个被销毁了，那么后一个就会补上第一个的位置，就会产生问题
         for (let i = length - 1; i >= 0; i-- ) {
             const element = children[i]
-            element.destroy();
+            // 将对象放回节电池, 不需要销毁了
+            PoolManager.instance().putNode(element)
+            // element.destroy();
         }
 
         // 销毁所有的子弹节点
@@ -441,7 +452,9 @@ export class GameManager extends Component {
         length = children.length;
         for(let i = length -1; i >= 0; i--) {
             const element = children[i]
-            element.destroy();
+            // 将对象放回节电池, 不需要销毁了
+            PoolManager.instance().putNode(element)
+            // element.destroy();
         }
     }
 }

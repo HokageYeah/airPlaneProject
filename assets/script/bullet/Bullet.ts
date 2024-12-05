@@ -1,5 +1,6 @@
 import { _decorator, Collider, Component, ITriggerEvent, math, Node } from 'cc';
 import { Constant } from '../framework/Constant';
+import { PoolManager } from '../framework/PoolManager';
 const { ccclass, property } = _decorator;
 
 @ccclass('Bullet')
@@ -54,7 +55,9 @@ export class Bullet extends Component {
         moveLength = Math.abs(moveLength);
         // 超过边界,销毁子弹
         if(moveLength > outofRange) {
-            this.node.destroy();
+            // 将对象放回节电池, 不需要销毁了
+            PoolManager.instance().putNode(this.node)
+            // this.node.destroy();
             // console.log('销毁子弹');
         }
     }
@@ -66,7 +69,9 @@ export class Bullet extends Component {
     private _onTriggerEnter(event: ITriggerEvent) {
         console.log('子弹碰撞事件')
         // 子弹直接销毁
-        this.node.destroy();
+        // this.node.destroy();
+         // 将对象放回节电池, 不需要销毁了
+         PoolManager.instance().putNode(this.node)
     }
 }
 

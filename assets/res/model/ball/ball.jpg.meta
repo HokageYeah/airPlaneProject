@@ -2,7 +2,7 @@
   "ver": "1.0.27",
   "importer": "image",
   "imported": true,
-  "uuid": "fd59d3e6-6dec-42fa-bac7-9f380b3bef42",
+  "uuid": "8f433cf5-76d4-4952-9035-2bf223f40bf9",
   "files": [
     ".jpg",
     ".json"
@@ -10,7 +10,7 @@
   "subMetas": {
     "6c48a": {
       "importer": "texture",
-      "uuid": "fd59d3e6-6dec-42fa-bac7-9f380b3bef42@6c48a",
+      "uuid": "8f433cf5-76d4-4952-9035-2bf223f40bf9@6c48a",
       "displayName": "ball",
       "id": "6c48a",
       "name": "texture",
@@ -22,7 +22,7 @@
         "mipfilter": "none",
         "anisotropy": 0,
         "isUuid": true,
-        "imageUuidOrDatabaseUri": "fd59d3e6-6dec-42fa-bac7-9f380b3bef42",
+        "imageUuidOrDatabaseUri": "8f433cf5-76d4-4952-9035-2bf223f40bf9",
         "visible": false
       },
       "ver": "1.0.22",
@@ -36,7 +36,7 @@
   "userData": {
     "hasAlpha": false,
     "type": "texture",
-    "fixAlphaTransparencyArtifacts": false,
-    "redirect": "fd59d3e6-6dec-42fa-bac7-9f380b3bef42@6c48a"
+    "redirect": "8f433cf5-76d4-4952-9035-2bf223f40bf9@6c48a",
+    "fixAlphaTransparencyArtifacts": false
   }
 }

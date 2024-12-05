@@ -2,12 +2,12 @@
   "ver": "2.3.13",
   "importer": "fbx",
   "imported": true,
-  "uuid": "56bbf52c-710a-4256-92b8-b871d487a044",
+  "uuid": "41972c30-e4f5-4427-ba84-a2d1884400f1",
   "files": [],
   "subMetas": {
     "97298": {
       "importer": "gltf-mesh",
-      "uuid": "56bbf52c-710a-4256-92b8-b871d487a044@97298",
+      "uuid": "41972c30-e4f5-4427-ba84-a2d1884400f1@97298",
       "displayName": "",
       "id": "97298",
       "name": "ball.mesh",
@@ -25,7 +25,7 @@
     },
     "8a942": {
       "importer": "gltf-material",
-      "uuid": "56bbf52c-710a-4256-92b8-b871d487a044@8a942",
+      "uuid": "41972c30-e4f5-4427-ba84-a2d1884400f1@8a942",
       "displayName": "",
       "id": "8a942",
       "name": "ball.material",
@@ -41,7 +41,7 @@
     },
     "8c1b3": {
       "importer": "gltf-scene",
-      "uuid": "56bbf52c-710a-4256-92b8-b871d487a044@8c1b3",
+      "uuid": "41972c30-e4f5-4427-ba84-a2d1884400f1@8c1b3",
       "displayName": "",
       "id": "8c1b3",
       "name": "ball.prefab",
@@ -58,8 +58,24 @@
   },
   "userData": {
     "imageMetas": [],
+    "legacyFbxImporter": false,
+    "assetFinder": {
+      "meshes": [
+        "41972c30-e4f5-4427-ba84-a2d1884400f1@97298"
+      ],
+      "skeletons": [],
+      "textures": [],
+      "materials": [
+        "41972c30-e4f5-4427-ba84-a2d1884400f1@8a942"
+      ],
+      "scenes": [
+        "41972c30-e4f5-4427-ba84-a2d1884400f1@8c1b3"
+      ]
+    },
     "fbx": {
-      "smartMaterialEnabled": true
+      "preferLocalTimeSpan": false,
+      "smartMaterialEnabled": false,
+      "matchMeshNames": false
     },
     "lods": {
       "enable": false,
@@ -77,19 +93,6 @@
           "screenRatio": 0.01,
           "faceCount": 0.1
         }
-      ]
-    },
-    "assetFinder": {
-      "meshes": [
-        "56bbf52c-710a-4256-92b8-b871d487a044@97298"
-      ],
-      "skeletons": [],
-      "textures": [],
-      "materials": [
-        "56bbf52c-710a-4256-92b8-b871d487a044@8a942"
-      ],
-      "scenes": [
-        "56bbf52c-710a-4256-92b8-b871d487a044@8c1b3"
       ]
     }
   }

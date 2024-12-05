@@ -2,7 +2,7 @@
   "ver": "1.0.27",
   "importer": "image",
   "imported": true,
-  "uuid": "4a6dd36c-85af-477b-9c89-54c185171247",
+  "uuid": "8feb4bd2-4563-4234-9f73-cb3d966e32e1",
   "files": [
     ".json",
     ".png"
@@ -10,7 +10,7 @@
   "subMetas": {
     "6c48a": {
       "importer": "texture",
-      "uuid": "4a6dd36c-85af-477b-9c89-54c185171247@6c48a",
+      "uuid": "8feb4bd2-4563-4234-9f73-cb3d966e32e1@6c48a",
       "displayName": "glowparticlesgenericsheet",
       "id": "6c48a",
       "name": "texture",
@@ -22,7 +22,7 @@
         "mipfilter": "none",
         "anisotropy": 0,
         "isUuid": true,
-        "imageUuidOrDatabaseUri": "4a6dd36c-85af-477b-9c89-54c185171247",
+        "imageUuidOrDatabaseUri": "8feb4bd2-4563-4234-9f73-cb3d966e32e1",
         "visible": false
       },
       "ver": "1.0.22",
@@ -36,7 +36,7 @@
   "userData": {
     "hasAlpha": true,
     "type": "texture",
-    "fixAlphaTransparencyArtifacts": false,
-    "redirect": "4a6dd36c-85af-477b-9c89-54c185171247@6c48a"
+    "redirect": "8feb4bd2-4563-4234-9f73-cb3d966e32e1@6c48a",
+    "fixAlphaTransparencyArtifacts": false
   }
 }

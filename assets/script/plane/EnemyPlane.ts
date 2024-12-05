@@ -1,6 +1,7 @@
 import { _decorator, Collider, Component, ITriggerEvent, Node } from 'cc';
 import { Constant } from '../framework/Constant';
 import { GameManager } from '../framework/GameManager';
+import { PoolManager } from '../framework/PoolManager';
 const { ccclass, property } = _decorator;
 
 const OUTOFBOUNCE = 55;
@@ -62,7 +63,9 @@ export class EnemyPlane extends Component {
         }
         // 超出边界，所以需要销毁
         if(movePos > OUTOFBOUNCE) {
-            this.node.destroy();
+            // 将对象放回节电池, 不需要销毁了
+            PoolManager.instance().putNode(this.node)
+            // this.node.destroy();
         }
     }
 
@@ -82,7 +85,9 @@ export class EnemyPlane extends Component {
             this._gameManager.playAudioEffect('enemy');
             // 加分
             this._gameManager.addScore();
-            this.node.destroy();
+            // 将对象放回节电池, 不需要销毁了
+            PoolManager.instance().putNode(this.node)
+            // this.node.destroy();
         }
     }
     private _onCollisionEnter(event: ITriggerEvent) {

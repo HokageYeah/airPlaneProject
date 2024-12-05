@@ -2,7 +2,7 @@
   "ver": "1.0.27",
   "importer": "image",
   "imported": true,
-  "uuid": "36b319f7-c86d-486d-962a-3dd73b8e3e0a",
+  "uuid": "1680f0d6-6b3f-45ed-bda7-00531580f9ac",
   "files": [
     ".json",
     ".png"
@@ -10,7 +10,7 @@
   "subMetas": {
     "6c48a": {
       "importer": "texture",
-      "uuid": "36b319f7-c86d-486d-962a-3dd73b8e3e0a@6c48a",
+      "uuid": "1680f0d6-6b3f-45ed-bda7-00531580f9ac@6c48a",
       "displayName": "smoke3",
       "id": "6c48a",
       "name": "texture",
@@ -22,7 +22,7 @@
         "mipfilter": "none",
         "anisotropy": 0,
         "isUuid": true,
-        "imageUuidOrDatabaseUri": "36b319f7-c86d-486d-962a-3dd73b8e3e0a",
+        "imageUuidOrDatabaseUri": "1680f0d6-6b3f-45ed-bda7-00531580f9ac",
         "visible": false
       },
       "ver": "1.0.22",
@@ -36,7 +36,7 @@
   "userData": {
     "hasAlpha": true,
     "type": "texture",
-    "fixAlphaTransparencyArtifacts": false,
-    "redirect": "36b319f7-c86d-486d-962a-3dd73b8e3e0a@6c48a"
+    "redirect": "1680f0d6-6b3f-45ed-bda7-00531580f9ac@6c48a",
+    "fixAlphaTransparencyArtifacts": false
   }
 }

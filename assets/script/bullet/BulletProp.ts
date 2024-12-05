@@ -1,6 +1,7 @@
 import { _decorator, Collider, Component, ITriggerEvent, Node } from 'cc';
 import { GameManager } from '../framework/GameManager';
 import { Constant } from '../framework/Constant';
+import { PoolManager } from '../framework/PoolManager';
 const { ccclass, property } = _decorator;
 
 @ccclass('BulletProp')
@@ -39,7 +40,9 @@ export class BulletProp extends Component {
         pos = this.node.position;
         // 超出50就销毁
         if(pos.z > 50) {
-            this.node.destroy();
+            // this.node.destroy();
+            // 将对象放回节电池, 不需要销毁了
+            PoolManager.instance().putNode(this.node)
         }
     }
     show(gameManager: GameManager ,speed: number) {
@@ -60,7 +63,9 @@ export class BulletProp extends Component {
                 this._gameManager.changeBulletType(Constant.BulletPropType.BULLET_M);
                 break;
         }
-        this.node.destroy();
+        // this.node.destroy();
+        // 将对象放回节电池, 不需要销毁了
+        PoolManager.instance().putNode(this.node)
     }
 }
 
