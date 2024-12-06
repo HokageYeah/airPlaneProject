@@ -5,6 +5,9 @@ const { ccclass, property } = _decorator;
 @ccclass('SelfPlane')
 export class SelfPlane extends Component {
 
+    @property(Node)
+    public explode: Node = null;
+
     // 玩家飞机的血量上线
     public lifeValue = 5;
 
@@ -47,6 +50,8 @@ export class SelfPlane extends Component {
             if(this._currLife <= 0) {
                 this.isDie = true;
                 this._audioSource.play();
+                // 激活玩家飞机爆炸的粒子特效
+                this.explode.active  = true;
                 console.log('self plane is die')
             }
         }
@@ -55,6 +60,7 @@ export class SelfPlane extends Component {
     public init() {
         this._currLife = this.lifeValue;
         this.isDie = false;
+        this.explode.active  = false;
     }
 
 }

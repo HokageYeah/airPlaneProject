@@ -25,6 +25,9 @@ export class GameManager extends Component {
     public enemy1Speed = 0.5; // 敌机1速度
     @property
     public enemy2Speed = 0.7; // 敌机2速度
+    // 爆炸预制
+    @property(Prefab)
+    public enemyExplode: Prefab = null;
 
     // UI部分
     // 子弹
@@ -219,11 +222,10 @@ export class GameManager extends Component {
         this._changePlaneMode();
         this._score = 0;
         this.gameScore.string = this._score.toString();
+        this.playerPlane.init();
     }
     public gameRestart() {
-        this.isGameStart = true;
-        // 再次开启定时器
-        this._changePlaneMode();
+        this.gameStart();
         this.reData();
     }
 
@@ -238,7 +240,6 @@ export class GameManager extends Component {
         this.isShootIngs(false);
         // 取消定时器的状态
         this.unschedule(this._modeChanged);
-        this.playerPlane.init();
         // 销毁场景里面的所有对象
         this._destoryAll();
     }
@@ -315,6 +316,13 @@ export class GameManager extends Component {
         colliderComp.setGroup(Constant.CollisionType.ENEMY_BULLET);
         colliderComp.setMask(Constant.CollisionType.SELF_PLANE);
     }
+
+    // 敌机死亡的时候调用粒子特效
+    public createEnemyEffect(pos: Vec3) {
+        const effect = PoolManager.instance().getNode(this.enemyExplode, this.bulletRoot);
+        effect.setPosition(pos);
+    }
+
     public createBulletProp() {
         // 创建子弹道具
         const randomProp = math.randomRangeInt(1, 4);

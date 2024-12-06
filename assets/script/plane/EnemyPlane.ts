@@ -87,6 +87,7 @@ export class EnemyPlane extends Component {
             this._gameManager.addScore();
             // 将对象放回节电池, 不需要销毁了
             PoolManager.instance().putNode(this.node)
+            this._gameManager.createEnemyEffect(this.node.position);
             // this.node.destroy();
         }
     }
