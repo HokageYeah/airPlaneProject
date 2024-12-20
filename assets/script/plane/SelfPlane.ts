@@ -20,6 +20,14 @@ export class SelfPlane extends Component {
     // 音频
     private _audioSource : AudioSource = null;
 
+    // 获取血条表面节点
+    @property(Node)
+    public bloodFace: Node = null;
+
+    // 血量的根节点
+    @property(Node)
+    public blood: Node = null;
+
     start() {
         this._audioSource = this.getComponent(AudioSource);
     }
@@ -46,12 +54,17 @@ export class SelfPlane extends Component {
         // 如果玩家的飞机碰撞敌方飞机、或者敌方子弹的话，执行如下逻辑
         if(collisionGroup === Constant.CollisionType.ENEMY_PLANE || collisionGroup === Constant.CollisionType.ENEMY_BULLET) {
             console.log('reduce blood')
+            if(this._currLife === this.lifeValue) {
+                this.blood.active = true;
+            }
             this._currLife --;
+            this.bloodFace.setScale(this._currLife/this.lifeValue,1,1)
             if(this._currLife <= 0) {
                 this.isDie = true;
                 this._audioSource.play();
                 // 激活玩家飞机爆炸的粒子特效
                 this.explode.active  = true;
+                this.blood.active = false;
                 console.log('self plane is die')
             }
         }
@@ -61,6 +74,7 @@ export class SelfPlane extends Component {
         this._currLife = this.lifeValue;
         this.isDie = false;
         this.explode.active  = false;
+        this.bloodFace.setScale(1,1,1)
     }
 
 }
